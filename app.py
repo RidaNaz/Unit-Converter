@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
@@ -7,6 +8,7 @@ from conversion import conversion_categories
 load_dotenv()
 
 # Initialize the Gemini model
+os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
 # Streamlit app
@@ -34,12 +36,12 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("From")
     amount = st.number_input("Amount:", min_value=0.0, format="%.2f", key="from_amount")
-    from_unit = st.selectbox("", list(unit_conversions.keys()), key="from_unit")
+    from_unit = st.selectbox("Unit:", list(unit_conversions.keys()), key="from_unit")
 
 with col2:
     st.subheader("To")
     result_amount = st.text_input("Result:", value=st.session_state.get("conversion_result", ""), disabled=True, key="to_amount")
-    to_unit = st.selectbox("", unit_conversions.get(from_unit, []), key="to_unit")
+    to_unit = st.selectbox("Unit:", unit_conversions.get(from_unit, []), key="to_unit")
 
 # Conversion prompt
 prompt = ChatPromptTemplate.from_template(
