@@ -20,6 +20,15 @@ st.set_page_config(
 )
 
 # Sidebar for selecting conversion category
+
+with st.sidebar:
+    col1, col2 = st.columns([0.2, 0.8])
+    with col1:
+      st.image("favicon.ico", width=25)
+
+    with col2:
+      st.markdown("<h2 style='margin-top: -15px;'>Rida Naz</h2>", unsafe_allow_html=True)
+
 st.sidebar.title("Conversion Categories")
 selected_category = st.sidebar.selectbox("Select a category:", list(conversion_categories.keys()))
 
