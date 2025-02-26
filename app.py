@@ -2,6 +2,7 @@ import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+from conversion import conversion_categories
 
 load_dotenv()
 
@@ -9,26 +10,25 @@ load_dotenv()
 chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
 # Streamlit app
-st.title("Unit Converter")
-st.markdown("Convert units in Length!")
 
-# Unit options and their acceptable conversion units
-unit_conversions = {
-    "meters": ["kilometers", "feet", "yards", "miles", "inches"],
-    "kilometers": ["meters", "miles"],
-    "grams": ["kilograms", "pounds", "ounces"],
-    "kilograms": ["grams", "pounds"],
-    "liters": ["milliliters", "gallons"],
-    "milliliters": ["liters"],
-    "miles": ["kilometers", "meters", "feet", "yards"],
-    "yards": ["meters", "feet", "inches", "miles"],
-    "feet": ["meters", "yards", "inches", "miles"],
-    "inches": ["meters", "feet", "yards"],
-    "pounds": ["grams", "kilograms", "ounces"],
-    "ounces": ["grams", "pounds"],
-    "gallons": ["liters"]
-}
+# Set page configuration
+st.set_page_config(
+    page_title="Unit Converter",
+    page_icon="favicon.ico"
+)
 
+# Sidebar for selecting conversion category
+st.sidebar.title("Conversion Categories")
+selected_category = st.sidebar.selectbox("Select a category:", list(conversion_categories.keys()))
+
+# Dynamic title based on selected category
+st.markdown(f"<h1 style='color: green; font-weight: bold;'>{selected_category} Converter</h1>",unsafe_allow_html=True)
+st.markdown("Smart unit conversions—fast, accurate, and AI-driven!")
+
+# Get the units for the selected category
+unit_conversions = conversion_categories[selected_category]
+
+# Layout for From and To units with amounts
 col1, col2 = st.columns(2)
 
 with col1:
@@ -43,7 +43,7 @@ with col2:
 
 # Conversion prompt
 prompt = ChatPromptTemplate.from_template(
-    "Convert {amount} {from_unit} to {to_unit}. Provide only the numeric result.")
+    "Convert {amount} {from_unit} to {to_unit}. Provide only the numeric result with the unit.")
 
 # Convert button
 if st.button("Convert"):
